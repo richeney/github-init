@@ -30,7 +30,9 @@ I have also assumed that you are working on your own laptop and that no-one else
     ```bash
     # Make it easier to create a git repo
 
-    export GITHUB_TOKEN=987654321eadd959e9f0c7cdbc9d0edfa7ffb3
+    GITHUB_USERID=richeney
+    GITHUB_TOKEN=987654321eadd959e9f0c7cdbc9d0edfa7ffb3
+
     github() {
       [ "$1" == "init" ] || { echo "Usage: github init"; return 1; }
       [ -z "$GITHUB_TOKEN" ] && { echo "Error: GITHUB_TOKEN is undefined"; return 1; }
@@ -42,16 +44,16 @@ I have also assumed that you are working on your own laptop and that no-one else
       git add .gitattributes
       git commit -m "Initial commit"
       curl  https://api.github.com/user/repos?access_token=$GITHUB_TOKEN -d {\"name\":\"$repo\"}
-      git remote add origin https://github.com/richeney/$repo.git
+      git remote add origin https://github.com/$GITHUB_USERID/$repo.git
       git push origin master
 
-      printf "\nCreated https://github.com/richeney/$repo\n"
+      printf "\nCreated https://github.com/$GITHUB_USERID/$repo\n"
       return 0
     }
     ```
 
-1. Replace the value of the GITHUB_TOKEN to your personal access token
-1. Replace `richeney` with your GitHub userid
+1. Replace the value of GITHUB_USERID with your GitHub userid
+1. Replace the value of GITHUB_TOKEN with your personal access token
 1. Save the profile
 1. Reread the profile using `source ~/.bashrc`
 
@@ -77,7 +79,9 @@ https://richeney:987654321eadd959e9f0c7cdbc9d0edfa7ffb3@github.com
 If so then you can modify the line in your profile, e.g.:
 
 ```bash
-export GITHUB_TOKEN==$(sed -E 's!^https://richeney:(.*)@github.com$!\1!' ~/.git-credentials)
+GITHUB_USERID=$(sed -E 's!^https://(.*):(.*)@github.com$!\1!' ~/.git-credentials)
+ GITHUB_TOKEN=$(sed -E 's!^https://(.*):(.*)@github.com$!\2!' ~/.git-credentials)
+
 ```
 
 The benefit of making that change is that it is a little more secure and it will continue to work if you refresh your personal access token.
