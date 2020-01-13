@@ -5,16 +5,15 @@ GITHUB_USERID=$(sed -E 's!^https://(.*):(.*)@github.com$!\1!' ~/.git-credentials
 
 github() {
   [ "$1" == "init" ] || { echo "Usage: github init"; return 1; }
-  [ -z "$GITHUB_TOKEN" ] && { echo "Error: GITHUB_TOKEN is
-undefined"; return 1; }
+  [ -z "$GITHUB_TOKEN" ] && { echo "Error: GITHUB_TOKEN is undefined"; return 1; }
   repo=$(basename $(pwd))
   echo "* text=auto eol=lf" > ./.gitattributes
   git init
   git add *
   git add .gitattributes
   git commit -m "Initial commit"
-  curl  https://api.github.com/user/repos?access_token=$GITHUB_TOK
--d {\"name\":\"$repo\"}
+  curl  https://api.github.com/user/repos?access_token=$GITHUB_TOKEN -d {\"name\":\"$repo\"}
+
   git remote add origin https://github.com/$GITHUB_USERID/$repo.git
   git push origin master
   printf "\nCreated https://github.com/$GITHUB_USERID/$repo\n"
